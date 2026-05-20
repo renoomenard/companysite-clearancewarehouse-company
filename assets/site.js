@@ -77,11 +77,9 @@
       let visible = 0;
 
       cards.forEach(card => {
-        const isEuropeCard = card.classList.contains('country-card-eu');
         const match = card.dataset.country.includes(q);
-        const shouldShow = match && !(isEuropeCard && q.length === 0);
-        card.style.display = shouldShow ? '' : 'none';
-        if (shouldShow) visible++;
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
       });
 
       if (noResult) noResult.style.display = visible === 0 ? 'block' : 'none';
