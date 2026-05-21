@@ -943,10 +943,24 @@ a { color: var(--ink-900); text-decoration: none; transition: background var(--d
   color: var(--ink-500);
   margin-bottom: 12px;
 }
+.blog-card h2,
 .blog-card h3 {
-  font-size: 22px;
-  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
   color: var(--ink-900);
+}
+.blog-card h2 a,
+.blog-card h3 a {
+  color: inherit;
+}
+.blog-card h2 a:hover,
+.blog-card h3 a:hover {
+  background: transparent;
+  color: var(--ink-700);
 }
 .blog-card p {
   font-size: 15px;
