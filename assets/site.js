@@ -1,42 +1,36 @@
 /* ============================================================
    CLEARANCE WAREHOUSE COMPANY — site.js
+   Saffron design system: pill nav, full-screen drawer, search
    ============================================================ */
 
 (function () {
   'use strict';
 
-  /* --- NAV SCROLL BEHAVIOUR --- */
-  const header = document.getElementById('site-header');
-  if (header) {
-    const onScroll = () => {
-      header.classList.toggle('scrolled', window.scrollY > 60);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-
-  /* --- HAMBURGER MENU --- */
+  /* --- MOBILE DRAWER --- */
   const hamburger = document.getElementById('hamburger');
   const overlay   = document.getElementById('mobile-overlay');
   const closeBtn  = document.getElementById('mobile-close');
 
   function openMenu() {
-    hamburger && hamburger.classList.add('active');
+    if (!overlay) return;
+    overlay.classList.add('open');
     hamburger && hamburger.setAttribute('aria-expanded', 'true');
-    overlay  && overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('no-scroll');
   }
   function closeMenu() {
-    hamburger && hamburger.classList.remove('active');
+    if (!overlay) return;
+    overlay.classList.remove('open');
     hamburger && hamburger.setAttribute('aria-expanded', 'false');
-    overlay  && overlay.classList.remove('open');
-    document.body.style.overflow = '';
+    document.body.classList.remove('no-scroll');
   }
-  hamburger && hamburger.addEventListener('click', openMenu);
-  closeBtn  && closeBtn.addEventListener('click', closeMenu);
+  hamburger && hamburger.addEventListener('click', () => {
+    const isOpen = overlay && overlay.classList.contains('open');
+    if (isOpen) closeMenu(); else openMenu();
+  });
+  closeBtn && closeBtn.addEventListener('click', closeMenu);
 
-  // Close on nav link click
-  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  // Close on nav link / mobile CTA tap
+  document.querySelectorAll('.mobile-nav-link, .mobile-cta').forEach(link => {
     link.addEventListener('click', closeMenu);
   });
 
@@ -49,15 +43,15 @@
   document.querySelectorAll('.faq-question').forEach(btn => {
     btn.addEventListener('click', () => {
       const item     = btn.closest('.faq-item');
+      if (!item) return;
       const expanded = item.classList.contains('open');
 
-      // Close all
       document.querySelectorAll('.faq-item.open').forEach(open => {
         open.classList.remove('open');
-        open.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        const q = open.querySelector('.faq-question');
+        q && q.setAttribute('aria-expanded', 'false');
       });
 
-      // Open clicked if was closed
       if (!expanded) {
         item.classList.add('open');
         btn.setAttribute('aria-expanded', 'true');
@@ -65,7 +59,7 @@
     });
   });
 
-  /* --- COUNTRY SEARCH --- */
+  /* --- COUNTRY SEARCH (home page) --- */
   const countrySearch = document.getElementById('country-search');
   const countryGrid   = document.getElementById('country-grid');
   const noResult      = document.getElementById('country-no-result');
@@ -86,7 +80,7 @@
     });
   }
 
-  /* --- BLOG ARCHIVE SEARCH (blog/index.html) --- */
+  /* --- BLOG ARCHIVE SEARCH --- */
   const blogSearch = document.getElementById('blog-search');
   const blogGrid   = document.getElementById('blog-grid');
   const blogNoRes  = document.getElementById('blog-no-result');
@@ -111,10 +105,12 @@
   /* --- SMOOTH SCROLL FOR ANCHOR LINKS --- */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
+      const href = a.getAttribute('href');
+      if (href === '#' || href.length < 2) return;
+      const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        const offset = 80;
+        const offset = 90;
         const top = target.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: 'smooth' });
       }
